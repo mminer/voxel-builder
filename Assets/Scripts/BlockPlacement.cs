@@ -1,0 +1,157 @@
+using System.Collections.Generic;
+using System.Text;
+using UnityEngine;
+
+public class BlockPlacement : MonoBehaviour
+{
+	enum Mode { None, Add, Remove }
+
+	static Transform placementGuide;
+	static Mode mode;
+	static Block highlightedForRemoval;
+
+	static bool guideVisible {
+		get { return placementGuide != null; }
+	}
+
+	void Update ()
+	{
+		if (Input.GetKeyDown(KeyCode.Alpha1)) {
+			mode = Mode.Add;
+		} else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+			mode = Mode.Remove;
+		} else if (Input.GetKeyDown(KeyCode.Alpha0)) {
+			mode = Mode.None;
+		}
+
+		switch (mode) {
+			case Mode.Add:
+				AddMode();
+				break;
+			case Mode.Remove:
+				RemoveMode();
+				break;
+		}
+	}
+
+	static void AddMode ()
+	{
+		// Ensure no block remains highlighted from Remove mode.
+		Unhighlight();
+
+		// Place a block on mouse click.
+		if (Input.GetMouseButtonDown(0)) {
+			if (guideVisible) {
+				Instantiate(Constants.block, placementGuide.position, Quaternion.identity);
+			}
+		}
+
+		// Draw a guide based on the player's mouse position.
+		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+
+		if (Physics.Raycast(ray, out hit)) {
+			// Create guide if one doesn't yet exist.
+			if (!guideVisible) {
+				placementGuide = Instantiate(Constants.placementGuide, hit.point, Quaternion.identity) as Transform;
+			}
+
+			// Reposition guide.
+			if (hit.collider.tag == "Block") {
+				placementGuide.position = hit.collider.transform.position + hit.normal;
+			} else { // On ground.
+				placementGuide.position = SnapToGrid(hit.point);
+			}
+		} else {
+			// Remove existing guide if mouse is no longer hovering over an object.
+			if (guideVisible) {
+				GameObject.Destroy(placementGuide.gameObject);
+			}
+		}
+	}
+
+	static void RemoveMode ()
+	{
+		if (guideVisible) {
+			GameObject.Destroy(placementGuide.gameObject);
+		}
+
+		// Draw a guide based on the player's mouse position.
+		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		RaycastHit hit;
+		Block hovered = null;
+
+		if (Physics.Raycast(ray, out hit)) {
+			if (hit.collider.tag == "Block") {
+				hovered = hit.collider.GetComponent<Block>();
+			}
+		}
+
+		if (hovered == null) {
+			Unhighlight();
+			return;
+		} else if (hovered != highlightedForRemoval) {
+			Unhighlight();
+			highlightedForRemoval = hovered;
+			highlightedForRemoval.HighlightForRemoval();
+		}
+
+		// Remove block on mouse click
+		if (Input.GetMouseButtonDown(0)) {
+			GameObject.Destroy(highlightedForRemoval.gameObject);
+		}
+	}
+
+	static void Unhighlight ()
+	{
+		// Skip out early if no block is highlighted.
+		if (highlightedForRemoval == null) {
+			return;
+		}
+
+		highlightedForRemoval.ClearRemovalHighlight();
+		highlightedForRemoval = null;
+	}
+
+	static Vector3 SnapToGrid (Vector3 vector)
+	{
+		var snapped = new Vector3(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
+		return snapped;
+	}
+
+	public static string Save ()
+	{
+		var blocks = GameObject.FindGameObjectsWithTag("Block");
+		var blockStrings = new StringBuilder(blocks.Length);
+
+		foreach (var block in blocks) {
+			blockStrings.AppendLine(block.GetComponent<Block>().ToString());
+		}
+
+		return blockStrings.ToString().Trim();
+	}
+
+	public static Block[] Load (string data)
+	{
+		Clear();
+		var blocks = new List<Block>();
+		var representations = data.Split('\n');
+
+		foreach (var representation in representations) {
+			var block = Block.InstantiateFromString(representation);
+			blocks.Add(block);
+		}
+
+		return blocks.ToArray();
+	}
+
+	public static void Clear ()
+	{
+		Unhighlight();
+		var blocks = GameObject.FindGameObjectsWithTag("Block");
+
+		foreach (var block in blocks) {
+			GameObject.Destroy(block);
+		}
+	}
+}
