@@ -5,9 +5,10 @@ public class Tester : MonoBehaviour
 	string data = "";
 	Vector3 scrollPos;
 	
-	void OnGUI ()
+	void OnGUI()
 	{
-		if (GUILayout.Button("Save")) {
+		if (GUILayout.Button("Save"))
+		{
 			data = BlockPlacement.Save();
 			Debug.Log(data);
 		}
@@ -16,11 +17,13 @@ public class Tester : MonoBehaviour
 		data = GUILayout.TextArea(data);
 		GUILayout.EndScrollView();
 		
-		if (GUILayout.Button("Generate From Saved")) {
+		if (GUILayout.Button("Generate From Saved"))
+		{
 			BlockPlacement.Load(data);
 		}
 		
-		if (GUILayout.Button("Clear")) {
+		if (GUILayout.Button("Clear"))
+		{
 			BlockPlacement.Clear();
 		}
 	}
