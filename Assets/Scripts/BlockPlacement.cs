@@ -1,5 +1,4 @@
-using System.Linq;
-using System.Text;
+using System;
 using UnityEngine;
 
 public class BlockPlacement : MonoBehaviour
@@ -49,7 +48,16 @@ public class BlockPlacement : MonoBehaviour
 		{
 			if (isGuideVisible)
 			{
-				Instantiate(Constants.block, placementGuide.position, Quaternion.identity);
+				var position = Vector3Int.RoundToInt(placementGuide.position);
+
+				var voxel = new Voxel(
+					Convert.ToSByte(position.x),
+					Convert.ToSByte(position.y),
+					Convert.ToSByte(position.z),
+					0,
+					0);
+
+				Block.InstantiateFromVoxel(voxel);
 			}
 		}
 
@@ -61,7 +69,7 @@ public class BlockPlacement : MonoBehaviour
 			// Create guide if one doesn't yet exist.
 			if (!isGuideVisible)
 			{
-				placementGuide = Instantiate(Constants.placementGuide, hit.point, Quaternion.identity) as Transform;
+				placementGuide = Instantiate(Constants.placementGuide, hit.point, Quaternion.identity);
 			}
 
 			// Reposition guide.
@@ -139,28 +147,6 @@ public class BlockPlacement : MonoBehaviour
 	static Vector3 SnapToGrid(Vector3 vector)
 	{
 		return new Vector3(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
-	}
-
-	public static string Save()
-	{
-		var blocks = GameObject.FindGameObjectsWithTag("Block");
-		var blockStrings = new StringBuilder(blocks.Length);
-
-		foreach (var block in blocks)
-		{
-			blockStrings.AppendLine(block.GetComponent<Block>().ToString());
-		}
-
-		return blockStrings.ToString().Trim();
-	}
-
-	public static Block[] Load(string data)
-	{
-		Clear();
-
-		return data.Split('\n')
-			.Select(representation => Block.InstantiateFromString(representation))
-			.ToArray();
 	}
 
 	public static void Clear()

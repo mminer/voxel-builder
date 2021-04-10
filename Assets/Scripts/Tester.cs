@@ -1,25 +1,33 @@
+using System.Linq;
 using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-	string data = "";
-	Vector3 scrollPos;
-	
+	string path = "/Users/matthewminer/Desktop/model.dat";
+
 	void OnGUI()
 	{
+		path = GUILayout.TextArea(path);
+
 		if (GUILayout.Button("Save"))
 		{
-			data = BlockPlacement.Save();
-			Debug.Log(data);
+			var model = GameObject
+				.FindGameObjectsWithTag("Block")
+				.Select(go => go.GetComponent<Block>().Voxel)
+				.ToList();
+
+			ModelIO.WriteModel(path, model);
 		}
-		
-		scrollPos = GUILayout.BeginScrollView(scrollPos);
-		data = GUILayout.TextArea(data);
-		GUILayout.EndScrollView();
-		
-		if (GUILayout.Button("Generate From Saved"))
+
+		if (GUILayout.Button("Load"))
 		{
-			BlockPlacement.Load(data);
+			BlockPlacement.Clear();
+			var model = ModelIO.ReadModel(path);
+
+			foreach (var voxel in model)
+			{
+				Block.InstantiateFromVoxel(voxel);
+			}
 		}
 		
 		if (GUILayout.Button("Clear"))
