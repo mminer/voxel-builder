@@ -6,11 +6,16 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class CameraControl : MonoBehaviour
 {
+	[Header("Orbit")]
 	[SerializeField] float horizontalOrbitSpeed = 100f;
 	[SerializeField] float verticalOrbitSpeed = 100f;
-	[SerializeField] float zoomSpeed = 10f;
 	[SerializeField] float minVerticalOrbit = 10f;
 	[SerializeField] float maxVerticalOrbit = 80f;
+
+	[Space]
+
+	[Header("Zoom")]
+	[SerializeField] float zoomSpeed = 10f;
 
 	void Update ()
 	{
