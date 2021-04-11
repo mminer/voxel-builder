@@ -3,7 +3,13 @@ using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
+	BlockPlacement blockPlacement;
 	string path = "/Users/matthewminer/Desktop/model.dat";
+
+	void Awake()
+	{
+		blockPlacement = GetComponent<BlockPlacement>();
+	}
 
 	void OnGUI()
 	{
@@ -21,8 +27,7 @@ public class Tester : MonoBehaviour
 
 		if (GUILayout.Button("Load"))
 		{
-			BlockPlacement.Clear();
-			var blockPlacement = GetComponent<BlockPlacement>();
+			blockPlacement.Clear();
 			var model = ModelIO.ReadModel(path);
 
 			foreach (var voxel in model)
@@ -33,7 +38,7 @@ public class Tester : MonoBehaviour
 		
 		if (GUILayout.Button("Clear"))
 		{
-			BlockPlacement.Clear();
+			blockPlacement.Clear();
 		}
 	}
 }

@@ -142,7 +142,7 @@ public class BlockPlacement : MonoBehaviour
 		}
 	}
 
-	static void Unhighlight()
+	void Unhighlight()
 	{
 		// Skip out early if no block is highlighted.
 		if (highlightedForRemoval == null)
@@ -154,7 +154,7 @@ public class BlockPlacement : MonoBehaviour
 		highlightedForRemoval = null;
 	}
 
-	public static void Clear()
+	public void Clear()
 	{
 		Unhighlight();
 		var blocks = GameObject.FindGameObjectsWithTag("Block");
