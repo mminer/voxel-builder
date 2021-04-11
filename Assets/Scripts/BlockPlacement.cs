@@ -84,7 +84,7 @@ public class BlockPlacement : MonoBehaviour
 			else
 			{
 				// On ground.
-				activePlacementGuide.position = SnapToGrid(hit.point);
+				activePlacementGuide.position = Vector3Int.RoundToInt(hit.point);
 			}
 		}
 		else
@@ -152,11 +152,6 @@ public class BlockPlacement : MonoBehaviour
 
 		highlightedForRemoval.ClearRemovalHighlight();
 		highlightedForRemoval = null;
-	}
-
-	static Vector3 SnapToGrid(Vector3 vector)
-	{
-		return new Vector3(Mathf.RoundToInt(vector.x), Mathf.RoundToInt(vector.y), Mathf.RoundToInt(vector.z));
 	}
 
 	public static void Clear()
