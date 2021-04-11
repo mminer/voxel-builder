@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public readonly struct Voxel
@@ -17,6 +18,15 @@ public readonly struct Voxel
         X = x;
         Y = y;
         Z = z;
+    }
+
+    public Voxel(Vector3 position, byte colorIndex = 0, ulong flags = 0) : this(
+        Convert.ToSByte(position.x),
+        Convert.ToSByte(position.y),
+        Convert.ToSByte(position.z),
+        colorIndex,
+        flags)
+    {
     }
 
     public override int GetHashCode() => Position.GetHashCode();

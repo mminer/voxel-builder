@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,22 +12,27 @@ public class BlockPlacement : MonoBehaviour
 	[SerializeField] Block blockPrefab;
 	[SerializeField] Transform placementGuide;
 
-	bool isGuideVisible => activePlacementGuide != null;
+	public readonly Dictionary<Voxel, Block> voxelBlockMap = new Dictionary<Voxel, Block>();
 
 	Transform activePlacementGuide;
-	public readonly Dictionary<Voxel, Block> voxelBlockMap = new Dictionary<Voxel, Block>();
+	Camera mainCamera;
+
+	void Start()
+	{
+		mainCamera = Camera.main;
+	}
 
 	void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Alpha1))
+		if (Input.GetKeyDown(KeyCode.Return))
 		{
 			mode = Mode.Add;
 		}
-		else if (Input.GetKeyDown(KeyCode.Alpha2))
+		else if (Input.GetKeyDown(KeyCode.Backspace))
 		{
 			mode = Mode.Remove;
 		}
-		else if (Input.GetKeyDown(KeyCode.Alpha0))
+		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			mode = Mode.None;
 		}
@@ -53,28 +57,22 @@ public class BlockPlacement : MonoBehaviour
 		// Place a block on mouse click.
 		if (Input.GetMouseButtonDown(0))
 		{
-			if (isGuideVisible)
+			if (activePlacementGuide == null)
 			{
-				var position = Vector3Int.RoundToInt(activePlacementGuide.position);
-
-				var voxel = new Voxel(
-					Convert.ToSByte(position.x),
-					Convert.ToSByte(position.y),
-					Convert.ToSByte(position.z),
-					0,
-					0);
-
-				AddVoxel(voxel);
+				return;
 			}
+
+			var voxel = new Voxel(activePlacementGuide.position);
+			AddVoxel(voxel);
+			return;
 		}
 
 		// Draw a guide based on the player's mouse position.
-		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
 		if (Physics.Raycast(ray, out var hit))
 		{
-			// Create guide if one doesn't yet exist.
-			if (!isGuideVisible)
+			if (activePlacementGuide == null)
 			{
 				activePlacementGuide = Instantiate(placementGuide, hit.point, Quaternion.identity);
 			}
@@ -93,7 +91,7 @@ public class BlockPlacement : MonoBehaviour
 		else
 		{
 			// Remove existing guide if mouse is no longer hovering over an object.
-			if (isGuideVisible)
+			if (activePlacementGuide != null)
 			{
 				Destroy(activePlacementGuide.gameObject);
 			}
@@ -108,13 +106,13 @@ public class BlockPlacement : MonoBehaviour
 
 	void RemoveMode()
 	{
-		if (isGuideVisible)
+		if (activePlacementGuide != null)
 		{
 			Destroy(activePlacementGuide.gameObject);
 		}
 
 		// Draw a guide based on the player's mouse position.
-		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 		var layerMask = 1 << blockPrefab.gameObject.layer;
 
 		if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
