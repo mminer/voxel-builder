@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 public static class ModelIO
@@ -7,7 +6,7 @@ public static class ModelIO
     const string FileType = "VM"; // "Voxel Model"?
     const byte Version = 1;
 
-    public static List<Voxel> ReadModel(string path)
+    public static Voxel[] ReadModel(string path)
     {
         using var fileStream = File.OpenRead(path);
         using var reader = new BinaryReader(fileStream);
@@ -30,10 +29,10 @@ public static class ModelIO
             voxels[i] = new Voxel(x, y, z, colorIndex, flags);
         }
 
-        return new List<Voxel>(voxels);
+        return voxels;
     }
 
-    public static void WriteModel(string path, List<Voxel> model)
+    public static void WriteModel(string path, Voxel[] model)
     {
         using var fileStream = File.OpenWrite(path);
         using var writer = new BinaryWriter(fileStream);
@@ -45,7 +44,7 @@ public static class ModelIO
 
         writer.Write(Version);
 
-        var voxelCount = Convert.ToUInt16(model.Count);
+        var voxelCount = Convert.ToUInt16(model.Length);
         writer.Write(voxelCount);
 
         for (var i = 0; i < voxelCount; i++)

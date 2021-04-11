@@ -17,11 +17,7 @@ public class Tester : MonoBehaviour
 
 		if (GUILayout.Button("Save"))
 		{
-			var model = GameObject
-				.FindGameObjectsWithTag("Block")
-				.Select(go => go.GetComponent<Block>().Voxel)
-				.ToList();
-
+			var model = blockPlacement.voxelBlockMap.Keys.ToArray();
 			ModelIO.WriteModel(path, model);
 		}
 
@@ -32,7 +28,7 @@ public class Tester : MonoBehaviour
 
 			foreach (var voxel in model)
 			{
-				blockPlacement.InstantiateBlockFromVoxel(voxel);
+				blockPlacement.AddVoxel(voxel);
 			}
 		}
 		

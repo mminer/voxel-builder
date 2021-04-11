@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BlockPlacement : MonoBehaviour
@@ -8,12 +10,13 @@ public class BlockPlacement : MonoBehaviour
 	static Mode mode;
 	static Block highlightedForRemoval;
 
-	[SerializeField] Block block;
+	[SerializeField] Block blockPrefab;
 	[SerializeField] Transform placementGuide;
 
 	bool isGuideVisible => activePlacementGuide != null;
 
 	Transform activePlacementGuide;
+	public readonly Dictionary<Voxel, Block> voxelBlockMap = new Dictionary<Voxel, Block>();
 
 	void Update()
 	{
@@ -61,7 +64,7 @@ public class BlockPlacement : MonoBehaviour
 					0,
 					0);
 
-				InstantiateBlockFromVoxel(voxel);
+				AddVoxel(voxel);
 			}
 		}
 
@@ -77,7 +80,7 @@ public class BlockPlacement : MonoBehaviour
 			}
 
 			// Reposition guide.
-			if (hit.collider.CompareTag("Block"))
+			if (hit.collider.GetComponent<Block>() != null)
 			{
 				activePlacementGuide.position = hit.collider.transform.position + hit.normal;
 			}
@@ -97,10 +100,10 @@ public class BlockPlacement : MonoBehaviour
 		}
 	}
 
-	public void InstantiateBlockFromVoxel(Voxel voxel)
+	public void AddVoxel(Voxel voxel)
 	{
-		var spawnedBlock = Instantiate(block, voxel.Position, Quaternion.identity);
-		spawnedBlock.Voxel = voxel;
+		var block = Instantiate(blockPrefab, voxel.Position, Quaternion.identity);
+		voxelBlockMap.Add(voxel, block);
 	}
 
 	void RemoveMode()
@@ -112,21 +115,15 @@ public class BlockPlacement : MonoBehaviour
 
 		// Draw a guide based on the player's mouse position.
 		var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		Block hovered = null;
+		var layerMask = 1 << blockPrefab.gameObject.layer;
 
-		if (Physics.Raycast(ray, out var hit))
-		{
-			if (hit.collider.CompareTag("Block"))
-			{
-				hovered = hit.collider.GetComponent<Block>();
-			}
-		}
-
-		if (hovered == null)
+		if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
 		{
 			Unhighlight();
 			return;
 		}
+
+		var hovered = hit.collider.GetComponent<Block>();
 
 		if (hovered != highlightedForRemoval)
 		{
@@ -138,7 +135,8 @@ public class BlockPlacement : MonoBehaviour
 		// Remove block on mouse click
 		if (Input.GetMouseButtonDown(0))
 		{
-			Destroy(highlightedForRemoval.gameObject);
+			var voxel = voxelBlockMap.First(x => x.Value == highlightedForRemoval).Key;
+			RemoveVoxel(voxel);
 		}
 	}
 
@@ -157,11 +155,17 @@ public class BlockPlacement : MonoBehaviour
 	public void Clear()
 	{
 		Unhighlight();
-		var blocks = GameObject.FindGameObjectsWithTag("Block");
 
-		foreach (var block in blocks)
+		foreach (var voxel in voxelBlockMap.Keys)
 		{
-			Destroy(block);
+			RemoveVoxel(voxel);
 		}
+	}
+
+	void RemoveVoxel(Voxel voxel)
+	{
+		var block = voxelBlockMap[voxel];
+		voxelBlockMap.Remove(voxel);
+		Destroy(block.gameObject);
 	}
 }

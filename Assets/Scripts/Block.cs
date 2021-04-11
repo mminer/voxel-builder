@@ -4,8 +4,6 @@ public class Block : MonoBehaviour
 {
 	[SerializeField] Material removalHighlight;
 
-	public Voxel Voxel { get; set; }
-
 	Material originalMaterial;
 
 	void Awake()

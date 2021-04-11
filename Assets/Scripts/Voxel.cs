@@ -1,6 +1,5 @@
 using UnityEngine;
 
-// TODO: should this be a record?
 public readonly struct Voxel
 {
     public readonly byte ColorIndex;
@@ -19,4 +18,6 @@ public readonly struct Voxel
         Y = y;
         Z = z;
     }
+
+    public override int GetHashCode() => Position.GetHashCode();
 }
