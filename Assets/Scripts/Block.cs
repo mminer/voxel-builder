@@ -5,19 +5,21 @@ public class Block : MonoBehaviour
 	[SerializeField] Material removalHighlight;
 
 	Material originalMaterial;
+	new Renderer renderer;
 
 	void Awake()
 	{
-		originalMaterial = GetComponent<Renderer>().material;
+		renderer = GetComponent<Renderer>();
+		originalMaterial = renderer.material;
 	}
 
 	public void ClearRemovalHighlight()
 	{
-		GetComponent<Renderer>().material = originalMaterial;
+		renderer.material = originalMaterial;
 	}
 
 	public void HighlightForRemoval()
 	{
-		GetComponent<Renderer>().material = removalHighlight;
+		renderer.material = removalHighlight;
 	}
 }
