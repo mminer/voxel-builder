@@ -321,6 +321,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363c98aefb4ee4c979f511b2e1e4b892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  block: {fileID: 11400002, guid: d3997992fdfa34648944f83461b74055, type: 3}
+  placementGuide: {fileID: 400000, guid: b3031005523ce420cb1a15f2bab9fca8, type: 3}
 --- !u!1 &18
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,8 +431,6 @@ GameObject:
   - component: {fileID: 24}
   - component: {fileID: 25}
   - component: {fileID: 17}
-  - component: {fileID: 26}
-  - component: {fileID: 27}
   m_Layer: 0
   m_Name: Control
   m_TagString: GameController
@@ -464,32 +464,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 640272ad1270445c88e1225ce34669a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &26
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 23}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7529ad6eaceec4dccbf1a36c04c6ebd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _block: {fileID: 11400002, guid: d3997992fdfa34648944f83461b74055, type: 3}
-  _placementGuide: {fileID: 400000, guid: b3031005523ce420cb1a15f2bab9fca8, type: 3}
---- !u!114 &27
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 23}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d32cef41ff405489fb4a720b540fddf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  materials:
-  - {fileID: 2100000, guid: e6e0abd4a718a4e26bb02955fb3d14e2, type: 2}
-  - {fileID: 2100000, guid: 720e5cfc3ebc247fe906f607cf90ad4e, type: 2}

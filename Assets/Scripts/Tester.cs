@@ -22,11 +22,12 @@ public class Tester : MonoBehaviour
 		if (GUILayout.Button("Load"))
 		{
 			BlockPlacement.Clear();
+			var blockPlacement = GetComponent<BlockPlacement>();
 			var model = ModelIO.ReadModel(path);
 
 			foreach (var voxel in model)
 			{
-				Block.InstantiateFromVoxel(voxel);
+				blockPlacement.InstantiateBlockFromVoxel(voxel);
 			}
 		}
 		

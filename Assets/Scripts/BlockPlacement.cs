@@ -5,11 +5,15 @@ public class BlockPlacement : MonoBehaviour
 {
 	enum Mode { None, Add, Remove }
 
-	static Transform placementGuide;
 	static Mode mode;
 	static Block highlightedForRemoval;
 
-	static bool isGuideVisible => placementGuide != null;
+	[SerializeField] Block block;
+	[SerializeField] Transform placementGuide;
+
+	bool isGuideVisible => activePlacementGuide != null;
+
+	Transform activePlacementGuide;
 
 	void Update()
 	{
@@ -38,7 +42,7 @@ public class BlockPlacement : MonoBehaviour
 		}
 	}
 
-	static void AddMode()
+	void AddMode()
 	{
 		// Ensure no block remains highlighted from Remove mode.
 		Unhighlight();
@@ -48,7 +52,7 @@ public class BlockPlacement : MonoBehaviour
 		{
 			if (isGuideVisible)
 			{
-				var position = Vector3Int.RoundToInt(placementGuide.position);
+				var position = Vector3Int.RoundToInt(activePlacementGuide.position);
 
 				var voxel = new Voxel(
 					Convert.ToSByte(position.x),
@@ -57,7 +61,7 @@ public class BlockPlacement : MonoBehaviour
 					0,
 					0);
 
-				Block.InstantiateFromVoxel(voxel);
+				InstantiateBlockFromVoxel(voxel);
 			}
 		}
 
@@ -69,18 +73,18 @@ public class BlockPlacement : MonoBehaviour
 			// Create guide if one doesn't yet exist.
 			if (!isGuideVisible)
 			{
-				placementGuide = Instantiate(Constants.placementGuide, hit.point, Quaternion.identity);
+				activePlacementGuide = Instantiate(placementGuide, hit.point, Quaternion.identity);
 			}
 
 			// Reposition guide.
 			if (hit.collider.CompareTag("Block"))
 			{
-				placementGuide.position = hit.collider.transform.position + hit.normal;
+				activePlacementGuide.position = hit.collider.transform.position + hit.normal;
 			}
 			else
 			{
 				// On ground.
-				placementGuide.position = SnapToGrid(hit.point);
+				activePlacementGuide.position = SnapToGrid(hit.point);
 			}
 		}
 		else
@@ -88,16 +92,22 @@ public class BlockPlacement : MonoBehaviour
 			// Remove existing guide if mouse is no longer hovering over an object.
 			if (isGuideVisible)
 			{
-				Destroy(placementGuide.gameObject);
+				Destroy(activePlacementGuide.gameObject);
 			}
 		}
 	}
 
-	static void RemoveMode()
+	public void InstantiateBlockFromVoxel(Voxel voxel)
+	{
+		var spawnedBlock = Instantiate(block, voxel.Position, Quaternion.identity);
+		spawnedBlock.Voxel = voxel;
+	}
+
+	void RemoveMode()
 	{
 		if (isGuideVisible)
 		{
-			Destroy(placementGuide.gameObject);
+			Destroy(activePlacementGuide.gameObject);
 		}
 
 		// Draw a guide based on the player's mouse position.
