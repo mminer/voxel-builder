@@ -12,10 +12,9 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 6500000}
   - component: {fileID: 2300000}
-  - component: {fileID: 11400002}
   m_Layer: 3
   m_Name: Block
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -97,16 +96,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63fc51b173bf94354bd1e611ce5c1e80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  removalHighlight: {fileID: 2100000, guid: a26fca23b3df94b6db9a675d588a17af, type: 2}

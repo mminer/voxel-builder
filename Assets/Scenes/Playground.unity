@@ -321,8 +321,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363c98aefb4ee4c979f511b2e1e4b892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockPrefab: {fileID: 11400002, guid: d3997992fdfa34648944f83461b74055, type: 3}
+  blockMaterial: {fileID: 2100000, guid: 639120632a1c341cfb0e0b1fa858f20d, type: 2}
+  blockPrefab: {fileID: 100000, guid: d3997992fdfa34648944f83461b74055, type: 3}
   placementGuide: {fileID: 400000, guid: b3031005523ce420cb1a15f2bab9fca8, type: 3}
+  removalHighlightMaterial: {fileID: 2100000, guid: a26fca23b3df94b6db9a675d588a17af,
+    type: 2}
 --- !u!1 &18
 GameObject:
   m_ObjectHideFlags: 0

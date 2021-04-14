@@ -7,12 +7,14 @@ public class BlockPlacement : MonoBehaviour
 	enum Mode { None, Add, Remove }
 
 	static Mode mode;
-	static Block highlightedForRemoval;
+	static GameObject highlightedForRemoval;
 
-	[SerializeField] Block blockPrefab;
+	[SerializeField] Material blockMaterial;
+	[SerializeField] GameObject blockPrefab;
 	[SerializeField] Transform placementGuide;
+	[SerializeField] Material removalHighlightMaterial;
 
-	public readonly Dictionary<Voxel, Block> voxelBlockMap = new Dictionary<Voxel, Block>();
+	public readonly Dictionary<Voxel, GameObject> voxelBlockMap = new Dictionary<Voxel, GameObject>();
 
 	Transform activePlacementGuide;
 	Camera mainCamera;
@@ -78,7 +80,7 @@ public class BlockPlacement : MonoBehaviour
 			}
 
 			// Reposition guide.
-			if (hit.collider.GetComponent<Block>() != null)
+			if (hit.collider.CompareTag("Block"))
 			{
 				activePlacementGuide.position = hit.collider.transform.position + hit.normal;
 			}
@@ -121,13 +123,11 @@ public class BlockPlacement : MonoBehaviour
 			return;
 		}
 
-		var hovered = hit.collider.GetComponent<Block>();
-
-		if (hovered != highlightedForRemoval)
+		if (hit.collider.CompareTag("Block"))
 		{
 			Unhighlight();
-			highlightedForRemoval = hovered;
-			highlightedForRemoval.HighlightForRemoval();
+			highlightedForRemoval = hit.collider.gameObject;
+			highlightedForRemoval.GetComponent<Renderer>().material = removalHighlightMaterial;
 		}
 
 		// Remove block on mouse click
@@ -146,7 +146,7 @@ public class BlockPlacement : MonoBehaviour
 			return;
 		}
 
-		highlightedForRemoval.ClearRemovalHighlight();
+		highlightedForRemoval.GetComponent<Renderer>().material = blockMaterial;
 		highlightedForRemoval = null;
 	}
 
