@@ -18,13 +18,15 @@ public class Tester : MonoBehaviour
 		if (GUILayout.Button("Save"))
 		{
 			var model = m_ModelBuilder.voxelBlockMap.Keys.ToArray();
-			ModelIO.WriteModel(path, model);
+			var writer = new ModelWriter(path);
+			writer.Write(model);
 		}
 
 		if (GUILayout.Button("Load"))
 		{
 			m_ModelBuilder.Clear();
-			var model = ModelIO.ReadModel(path);
+			var reader = new ModelReader(path);
+			var model = reader.Read();
 
 			foreach (var voxel in model)
 			{
