@@ -24,11 +24,7 @@ public class ModelLoaderUI : MonoBehaviour
 		{
 			var reader = new ModelReader(path);
 			var model = reader.Read();
-
-			foreach (var voxel in model)
-			{
-				modelBuilder.AddVoxel(voxel);
-			}
+			modelBuilder.Load(model);
 		}
 	}
 }

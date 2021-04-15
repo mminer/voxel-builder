@@ -7,11 +7,10 @@ public class ModelBuilder : MonoBehaviour
 	enum Mode { None, Add, Remove }
 
 	const string blockLayerName = "Block";
-	const string blockTagName = "Block";
 
-	[SerializeField] Material blockMaterial;
 	[SerializeField] Material placementGuideMaterial;
 	[SerializeField] Material removalHighlightMaterial;
+	[SerializeField] Material voxelMaterial;
 
 	public Voxel[] model => voxelGameObjectMap.Keys.ToArray();
 
@@ -57,6 +56,14 @@ public class ModelBuilder : MonoBehaviour
 		}
 	}
 
+	public void Load(Voxel[] model)
+	{
+		foreach (var voxel in model)
+		{
+			AddVoxel(voxel);
+		}
+	}
+
 	void AddMode()
 	{
 		// Ensure no block remains highlighted from Remove mode.
@@ -90,7 +97,7 @@ public class ModelBuilder : MonoBehaviour
 			}
 
 			// Reposition guide.
-			placementGuide.transform.position = hit.collider.CompareTag(blockTagName)
+			placementGuide.transform.position = hit.collider.gameObject.layer == LayerMask.NameToLayer(blockLayerName)
 				? hit.collider.transform.position + hit.normal
 				: Vector3Int.RoundToInt(hit.point); // On ground
 		}
@@ -104,13 +111,12 @@ public class ModelBuilder : MonoBehaviour
 		}
 	}
 
-	public void AddVoxel(Voxel voxel)
+	void AddVoxel(Voxel voxel)
 	{
 		var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		go.GetComponent<Renderer>().material = blockMaterial;
+		go.GetComponent<Renderer>().material = voxelMaterial;
 		go.layer = LayerMask.NameToLayer(blockLayerName);
 		go.name = "Voxel";
-		go.tag = blockTagName;
 		go.transform.position = voxel.Position;
 		voxelGameObjectMap.Add(voxel, go);
 	}
@@ -144,7 +150,7 @@ public class ModelBuilder : MonoBehaviour
 			return;
 		}
 
-		if (hit.collider.CompareTag(blockTagName))
+		if (hit.collider.gameObject.layer == LayerMask.NameToLayer(blockLayerName))
 		{
 			Unhighlight();
 			highlightedForRemoval = hit.collider.gameObject;
@@ -174,7 +180,7 @@ public class ModelBuilder : MonoBehaviour
 			return;
 		}
 
-		highlightedForRemoval.GetComponent<Renderer>().material = blockMaterial;
+		highlightedForRemoval.GetComponent<Renderer>().material = voxelMaterial;
 		highlightedForRemoval = null;
 	}
 }

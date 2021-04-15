@@ -321,11 +321,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363c98aefb4ee4c979f511b2e1e4b892, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockMaterial: {fileID: 2100000, guid: 639120632a1c341cfb0e0b1fa858f20d, type: 2}
   placementGuideMaterial: {fileID: 2100000, guid: 42911975dc91a4898957846746921b73,
     type: 2}
   removalHighlightMaterial: {fileID: 2100000, guid: a26fca23b3df94b6db9a675d588a17af,
     type: 2}
+  voxelMaterial: {fileID: 2100000, guid: 639120632a1c341cfb0e0b1fa858f20d, type: 2}
+  mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &18
 GameObject:
   m_ObjectHideFlags: 0
