@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class Tester : MonoBehaviour
+public class ModelLoaderUI : MonoBehaviour
 {
 	ModelBuilder modelBuilder;
 	string path = "/Users/matthewminer/Desktop/model.dat";
 
-	void Awake()
+	void Start()
 	{
 		modelBuilder = GetComponent<ModelBuilder>();
 	}
@@ -22,7 +22,6 @@ public class Tester : MonoBehaviour
 
 		if (GUILayout.Button("Load"))
 		{
-			modelBuilder.Clear();
 			var reader = new ModelReader(path);
 			var model = reader.Read();
 
@@ -30,11 +29,6 @@ public class Tester : MonoBehaviour
 			{
 				modelBuilder.AddVoxel(voxel);
 			}
-		}
-		
-		if (GUILayout.Button("Clear"))
-		{
-			modelBuilder.Clear();
 		}
 	}
 }

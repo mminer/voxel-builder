@@ -17,7 +17,7 @@ public class CameraSteerer : MonoBehaviour
 	[Header("Zoom")]
 	[SerializeField] float zoomSpeed = 10f;
 
-	void Update ()
+	void Update()
 	{
 		Orbit();
 		Zoom();
@@ -54,7 +54,7 @@ public class CameraSteerer : MonoBehaviour
 		}
 	}
 
-	void Zoom ()
+	void Zoom()
 	{
 		if (Input.GetKey(KeyCode.Equals))
 		{

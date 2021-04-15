@@ -13,13 +13,13 @@ public class ModelBuilder : MonoBehaviour
 	[SerializeField] Material placementGuideMaterial;
 	[SerializeField] Material removalHighlightMaterial;
 
-	public Voxel[] model => voxelBlockMap.Keys.ToArray();
+	public Voxel[] model => voxelGameObjectMap.Keys.ToArray();
 
 	GameObject highlightedForRemoval;
 	Camera mainCamera;
 	Mode mode;
 	GameObject placementGuide;
-	readonly Dictionary<Voxel, GameObject> voxelBlockMap = new Dictionary<Voxel, GameObject>();
+	readonly Dictionary<Voxel, GameObject> voxelGameObjectMap = new Dictionary<Voxel, GameObject>();
 
 	void Start()
 	{
@@ -39,6 +39,10 @@ public class ModelBuilder : MonoBehaviour
 		else if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			mode = Mode.None;
+		}
+		else if (Input.GetKeyDown(KeyCode.C))
+		{
+			Clear();
 		}
 
 		switch (mode)
@@ -81,19 +85,14 @@ public class ModelBuilder : MonoBehaviour
 				placementGuide = GameObject.CreatePrimitive(PrimitiveType.Cube);
 				placementGuide.GetComponent<Renderer>().material = placementGuideMaterial;
 				placementGuide.layer = LayerMask.NameToLayer("Ignore Raycast");
+				placementGuide.name = "PlacementGuide";
 				placementGuide.transform.position = hit.point;
 			}
 
 			// Reposition guide.
-			if (hit.collider.CompareTag(blockTagName))
-			{
-				placementGuide.transform.position = hit.collider.transform.position + hit.normal;
-			}
-			else
-			{
-				// On ground.
-				placementGuide.transform.position = Vector3Int.RoundToInt(hit.point);
-			}
+			placementGuide.transform.position = hit.collider.CompareTag(blockTagName)
+				? hit.collider.transform.position + hit.normal
+				: Vector3Int.RoundToInt(hit.point); // On ground
 		}
 		else
 		{
@@ -107,12 +106,25 @@ public class ModelBuilder : MonoBehaviour
 
 	public void AddVoxel(Voxel voxel)
 	{
-		var block = GameObject.CreatePrimitive(PrimitiveType.Cube);
-		block.GetComponent<Renderer>().material = blockMaterial;
-		block.layer = LayerMask.NameToLayer(blockLayerName);
-		block.tag = blockTagName;
-		block.transform.position = voxel.Position;
-		voxelBlockMap.Add(voxel, block);
+		var go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		go.GetComponent<Renderer>().material = blockMaterial;
+		go.layer = LayerMask.NameToLayer(blockLayerName);
+		go.name = "Voxel";
+		go.tag = blockTagName;
+		go.transform.position = voxel.Position;
+		voxelGameObjectMap.Add(voxel, go);
+	}
+
+	void Clear()
+	{
+		Unhighlight();
+
+		foreach (var go in voxelGameObjectMap.Values)
+		{
+			Destroy(go);
+		}
+
+		voxelGameObjectMap.Clear();
 	}
 
 	void RemoveMode()
@@ -142,9 +154,16 @@ public class ModelBuilder : MonoBehaviour
 		// Remove block on mouse click
 		if (Input.GetMouseButtonDown(0))
 		{
-			var voxel = voxelBlockMap.First(x => x.Value == highlightedForRemoval).Key;
+			var voxel = voxelGameObjectMap.First(x => x.Value == highlightedForRemoval).Key;
 			RemoveVoxel(voxel);
 		}
+	}
+
+	void RemoveVoxel(Voxel voxel)
+	{
+		var go = voxelGameObjectMap[voxel];
+		voxelGameObjectMap.Remove(voxel);
+		Destroy(go);
 	}
 
 	void Unhighlight()
@@ -157,22 +176,5 @@ public class ModelBuilder : MonoBehaviour
 
 		highlightedForRemoval.GetComponent<Renderer>().material = blockMaterial;
 		highlightedForRemoval = null;
-	}
-
-	public void Clear()
-	{
-		Unhighlight();
-
-		foreach (var voxel in voxelBlockMap.Keys)
-		{
-			RemoveVoxel(voxel);
-		}
-	}
-
-	void RemoveVoxel(Voxel voxel)
-	{
-		var block = voxelBlockMap[voxel];
-		voxelBlockMap.Remove(voxel);
-		Destroy(block.gameObject);
 	}
 }
