@@ -1,14 +1,13 @@
-using System.Linq;
 using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-	ModelBuilder m_ModelBuilder;
+	ModelBuilder modelBuilder;
 	string path = "/Users/matthewminer/Desktop/model.dat";
 
 	void Awake()
 	{
-		m_ModelBuilder = GetComponent<ModelBuilder>();
+		modelBuilder = GetComponent<ModelBuilder>();
 	}
 
 	void OnGUI()
@@ -17,26 +16,25 @@ public class Tester : MonoBehaviour
 
 		if (GUILayout.Button("Save"))
 		{
-			var model = m_ModelBuilder.voxelBlockMap.Keys.ToArray();
 			var writer = new ModelWriter(path);
-			writer.Write(model);
+			writer.Write(modelBuilder.model);
 		}
 
 		if (GUILayout.Button("Load"))
 		{
-			m_ModelBuilder.Clear();
+			modelBuilder.Clear();
 			var reader = new ModelReader(path);
 			var model = reader.Read();
 
 			foreach (var voxel in model)
 			{
-				m_ModelBuilder.AddVoxel(voxel);
+				modelBuilder.AddVoxel(voxel);
 			}
 		}
 		
 		if (GUILayout.Button("Clear"))
 		{
-			m_ModelBuilder.Clear();
+			modelBuilder.Clear();
 		}
 	}
 }

@@ -6,18 +6,20 @@ public class ModelBuilder : MonoBehaviour
 {
 	enum Mode { None, Add, Remove }
 
-	static Mode mode;
-	static GameObject highlightedForRemoval;
+	const string blockLayerName = "Block";
+	const string blockTagName = "Block";
 
 	[SerializeField] Material blockMaterial;
-	[SerializeField] GameObject blockPrefab;
 	[SerializeField] Transform placementGuide;
 	[SerializeField] Material removalHighlightMaterial;
 
-	public readonly Dictionary<Voxel, GameObject> voxelBlockMap = new Dictionary<Voxel, GameObject>();
+	public Voxel[] model => voxelBlockMap.Keys.ToArray();
 
 	Transform activePlacementGuide;
+	GameObject highlightedForRemoval;
 	Camera mainCamera;
+	Mode mode;
+	readonly Dictionary<Voxel, GameObject> voxelBlockMap = new Dictionary<Voxel, GameObject>();
 
 	void Start()
 	{
@@ -80,7 +82,7 @@ public class ModelBuilder : MonoBehaviour
 			}
 
 			// Reposition guide.
-			if (hit.collider.CompareTag("Block"))
+			if (hit.collider.CompareTag(blockTagName))
 			{
 				activePlacementGuide.position = hit.collider.transform.position + hit.normal;
 			}
@@ -102,7 +104,11 @@ public class ModelBuilder : MonoBehaviour
 
 	public void AddVoxel(Voxel voxel)
 	{
-		var block = Instantiate(blockPrefab, voxel.Position, Quaternion.identity);
+		var block = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		block.GetComponent<Renderer>().material = blockMaterial;
+		block.layer = LayerMask.NameToLayer(blockLayerName);
+		block.tag = blockTagName;
+		block.transform.position = voxel.Position;
 		voxelBlockMap.Add(voxel, block);
 	}
 
@@ -115,7 +121,7 @@ public class ModelBuilder : MonoBehaviour
 
 		// Draw a guide based on the player's mouse position.
 		var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-		var layerMask = 1 << blockPrefab.gameObject.layer;
+		var layerMask = LayerMask.GetMask(blockLayerName);
 
 		if (!Physics.Raycast(ray, out var hit, Mathf.Infinity, layerMask))
 		{
@@ -123,7 +129,7 @@ public class ModelBuilder : MonoBehaviour
 			return;
 		}
 
-		if (hit.collider.CompareTag("Block"))
+		if (hit.collider.CompareTag(blockTagName))
 		{
 			Unhighlight();
 			highlightedForRemoval = hit.collider.gameObject;
