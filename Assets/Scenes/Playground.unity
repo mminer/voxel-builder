@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 10}
   - component: {fileID: 13}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 11}
   - component: {fileID: 12}
   m_Layer: 0
-  m_Name: Directional light
+  m_Name: DirectionalLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -171,7 +171,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &10
 Camera:
@@ -228,7 +228,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &12
 Light:
@@ -322,8 +322,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   blockMaterial: {fileID: 2100000, guid: 639120632a1c341cfb0e0b1fa858f20d, type: 2}
-  blockPrefab: {fileID: 100000, guid: d3997992fdfa34648944f83461b74055, type: 3}
-  placementGuide: {fileID: 400000, guid: b3031005523ce420cb1a15f2bab9fca8, type: 3}
+  placementGuideMaterial: {fileID: 2100000, guid: 42911975dc91a4898957846746921b73,
+    type: 2}
   removalHighlightMaterial: {fileID: 2100000, guid: a26fca23b3df94b6db9a675d588a17af,
     type: 2}
 --- !u!1 &18
@@ -432,10 +432,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 24}
-  - component: {fileID: 25}
   - component: {fileID: 17}
+  - component: {fileID: 25}
   m_Layer: 0
-  m_Name: Control
+  m_Name: ModelBuilder
   m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -453,7 +453,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &25
 MonoBehaviour:

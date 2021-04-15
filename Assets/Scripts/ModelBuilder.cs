@@ -10,15 +10,15 @@ public class ModelBuilder : MonoBehaviour
 	const string blockTagName = "Block";
 
 	[SerializeField] Material blockMaterial;
-	[SerializeField] Transform placementGuide;
+	[SerializeField] Material placementGuideMaterial;
 	[SerializeField] Material removalHighlightMaterial;
 
 	public Voxel[] model => voxelBlockMap.Keys.ToArray();
 
-	Transform activePlacementGuide;
 	GameObject highlightedForRemoval;
 	Camera mainCamera;
 	Mode mode;
+	GameObject placementGuide;
 	readonly Dictionary<Voxel, GameObject> voxelBlockMap = new Dictionary<Voxel, GameObject>();
 
 	void Start()
@@ -61,12 +61,12 @@ public class ModelBuilder : MonoBehaviour
 		// Place a block on mouse click.
 		if (Input.GetMouseButtonDown(0))
 		{
-			if (activePlacementGuide == null)
+			if (placementGuide == null)
 			{
 				return;
 			}
 
-			var voxel = new Voxel(activePlacementGuide.position);
+			var voxel = new Voxel(placementGuide.transform.position);
 			AddVoxel(voxel);
 			return;
 		}
@@ -76,28 +76,31 @@ public class ModelBuilder : MonoBehaviour
 
 		if (Physics.Raycast(ray, out var hit))
 		{
-			if (activePlacementGuide == null)
+			if (placementGuide == null)
 			{
-				activePlacementGuide = Instantiate(placementGuide, hit.point, Quaternion.identity);
+				placementGuide = GameObject.CreatePrimitive(PrimitiveType.Cube);
+				placementGuide.GetComponent<Renderer>().material = placementGuideMaterial;
+				placementGuide.layer = LayerMask.NameToLayer("Ignore Raycast");
+				placementGuide.transform.position = hit.point;
 			}
 
 			// Reposition guide.
 			if (hit.collider.CompareTag(blockTagName))
 			{
-				activePlacementGuide.position = hit.collider.transform.position + hit.normal;
+				placementGuide.transform.position = hit.collider.transform.position + hit.normal;
 			}
 			else
 			{
 				// On ground.
-				activePlacementGuide.position = Vector3Int.RoundToInt(hit.point);
+				placementGuide.transform.position = Vector3Int.RoundToInt(hit.point);
 			}
 		}
 		else
 		{
 			// Remove existing guide if mouse is no longer hovering over an object.
-			if (activePlacementGuide != null)
+			if (placementGuide != null)
 			{
-				Destroy(activePlacementGuide.gameObject);
+				Destroy(placementGuide);
 			}
 		}
 	}
@@ -114,9 +117,9 @@ public class ModelBuilder : MonoBehaviour
 
 	void RemoveMode()
 	{
-		if (activePlacementGuide != null)
+		if (placementGuide != null)
 		{
-			Destroy(activePlacementGuide.gameObject);
+			Destroy(placementGuide);
 		}
 
 		// Draw a guide based on the player's mouse position.
