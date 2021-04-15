@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BlockPlacement : MonoBehaviour
+public class ModelBuilder : MonoBehaviour
 {
 	enum Mode { None, Add, Remove }
 

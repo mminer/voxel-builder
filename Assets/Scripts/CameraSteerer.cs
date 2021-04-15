@@ -4,7 +4,7 @@ using UnityEngine;
 /// Allows the camera to orbit and zoom.
 /// </summary>
 [RequireComponent(typeof(Camera))]
-public class CameraControl : MonoBehaviour
+public class CameraSteerer : MonoBehaviour
 {
 	[Header("Orbit")]
 	[SerializeField] float horizontalOrbitSpeed = 100f;

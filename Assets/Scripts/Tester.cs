@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Tester : MonoBehaviour
 {
-	BlockPlacement blockPlacement;
+	ModelBuilder m_ModelBuilder;
 	string path = "/Users/matthewminer/Desktop/model.dat";
 
 	void Awake()
 	{
-		blockPlacement = GetComponent<BlockPlacement>();
+		m_ModelBuilder = GetComponent<ModelBuilder>();
 	}
 
 	void OnGUI()
@@ -17,24 +17,24 @@ public class Tester : MonoBehaviour
 
 		if (GUILayout.Button("Save"))
 		{
-			var model = blockPlacement.voxelBlockMap.Keys.ToArray();
+			var model = m_ModelBuilder.voxelBlockMap.Keys.ToArray();
 			ModelIO.WriteModel(path, model);
 		}
 
 		if (GUILayout.Button("Load"))
 		{
-			blockPlacement.Clear();
+			m_ModelBuilder.Clear();
 			var model = ModelIO.ReadModel(path);
 
 			foreach (var voxel in model)
 			{
-				blockPlacement.AddVoxel(voxel);
+				m_ModelBuilder.AddVoxel(voxel);
 			}
 		}
 		
 		if (GUILayout.Button("Clear"))
 		{
-			blockPlacement.Clear();
+			m_ModelBuilder.Clear();
 		}
 	}
 }
